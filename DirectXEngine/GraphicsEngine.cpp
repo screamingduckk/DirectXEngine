@@ -58,7 +58,7 @@ bool GraphicsEngine::release()
     m_dxgi_adapter->Release();
     m_dxgi_factory->Release();
 
-    m_imm_device_context->Release();
+    m_imm_device_context->release();
     m_d3d_device->Release();
 
 
@@ -71,6 +71,11 @@ GraphicsEngine::~GraphicsEngine()
 SwapChain* GraphicsEngine::createSwapChain()
 {
     return new SwapChain();
+}
+
+DeviceContext* GraphicsEngine::getImmediateDeviceContext()
+{
+    return this->m_imm_device_context;;
 }
 
 GraphicsEngine * GraphicsEngine::get()

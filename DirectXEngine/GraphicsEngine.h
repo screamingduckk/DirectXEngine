@@ -16,6 +16,7 @@ public:
 	~GraphicsEngine();
 public:
 	SwapChain* createSwapChain();
+	DeviceContext* getImmediateDeviceContext();
 public:
 	static GraphicsEngine* get();
 
