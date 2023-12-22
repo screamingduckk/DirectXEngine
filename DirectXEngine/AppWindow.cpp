@@ -42,11 +42,17 @@ void AppWindow::onCreate()
 	UINT size_list = ARRAYSIZE(list);
 
 	GraphicsEngine::get()->createShaders();
-
+	
 	void* shader_byte_code = nullptr;
-	UINT size_shader = 0;
-	GraphicsEngine::get()->getShaderBufferAndSize(&shader_byte_code,&size_shader);
+	size_t size_shader = 0;
+
+	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
+
+	m_vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, size_shader);
+
 	m_vb->load(list, sizeof(vertex), size_list, shader_byte_code, size_shader);
+
+	GraphicsEngine::get()->releaseCompiledShader();
 }
 
 void AppWindow::onUpdate()
@@ -57,6 +63,7 @@ void AppWindow::onUpdate()
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 	GraphicsEngine::get()->setShaders();
+	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
 
 	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
 
