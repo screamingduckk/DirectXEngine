@@ -8,6 +8,7 @@ struct vec3
 struct vertex
 {
 	vec3 position;
+	vec3 color;
 
 };
 
@@ -32,10 +33,10 @@ void AppWindow::onCreate()
 	vertex list[] =
 	{
 		// x - y - z
-		{-0.5f, -0.5f, 0.0f}, //pos1
-		{-0.5f, 0.5f, 0.0f}, //pos2
-		{0.5f, -0.5f, 0.0f}, //pos5
-		{0.5f, 0.5f, 0.0f} //pos3
+		{-0.5f, -0.5f, 0.0f,	1, 0, 0}, //pos1
+		{-0.5f, 0.5f, 0.0f,		0, 1, 0}, //pos2
+		{0.5f, -0.5f, 0.0f,		0, 0, 1}, //pos5
+		{0.5f, 0.5f, 0.0f,		1, 1, 0} //pos3
 	};
 
 	m_vb = GraphicsEngine::get()->createVertexBuffer();
