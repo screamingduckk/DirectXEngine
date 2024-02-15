@@ -9,7 +9,6 @@ Window::Window()
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	//GetWindowLong(hwnd,)
 	switch (msg)
 	{
 	case WM_CREATE:
