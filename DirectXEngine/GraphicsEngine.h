@@ -8,16 +8,16 @@ class GraphicsEngine
 public:
 	GraphicsEngine();
 	
-	bool init();
-	
-	bool release();
 	RenderSystem* getRenderSystem();
+
 	~GraphicsEngine();
 
 public:
 	static GraphicsEngine* get();
-
+	static void create();
+	static void release();
 private:
 	RenderSystem* m_render_system = nullptr;
+	static GraphicsEngine* m_engine;
 };
 

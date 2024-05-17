@@ -13,10 +13,6 @@
 
 RenderSystem::RenderSystem()
 {
-}
-
-bool RenderSystem::init()
-{
 	D3D_DRIVER_TYPE driver_types[] =
 	{
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -43,7 +39,7 @@ bool RenderSystem::init()
 	}
 	if (FAILED(res))
 	{
-		return false;
+		throw std::exception("Error creating DX11 device");
 	}
 
 	m_imm_device_context = std::make_shared <DeviceContext>(m_imm_context, this);
@@ -51,16 +47,13 @@ bool RenderSystem::init()
 	m_d3d_device->QueryInterface(__uuidof(IDXGIDevice), (void**)&m_dxgi_device);
 	m_dxgi_device->GetParent(__uuidof(IDXGIAdapter), (void**)&m_dxgi_adapter);
 	m_dxgi_adapter->GetParent(__uuidof(IDXGIFactory), (void**)&m_dxgi_factory);
-
-	return true;
 }
 
 
-bool RenderSystem::release()
-{
-	if (m_vs)m_vs->Release();
-	if (m_ps)m_ps->Release();
 
+
+RenderSystem::~RenderSystem()
+{
 	if (m_vsblob)m_vsblob->Release();
 	if (m_psblob)m_psblob->Release();
 
@@ -69,11 +62,6 @@ bool RenderSystem::release()
 	m_dxgi_factory->Release();
 
 	m_d3d_device->Release();
-	return true;
-}
-
-RenderSystem::~RenderSystem()
-{
 }
 
 SwapChainPtr RenderSystem::createSwapChain(HWND hwnd, UINT width, UINT height)

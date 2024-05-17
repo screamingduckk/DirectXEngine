@@ -7,9 +7,6 @@ class RenderSystem
 public:
 	RenderSystem();
 
-	bool init();
-
-	bool release();
 	~RenderSystem();
 public:
 	SwapChainPtr createSwapChain(HWND hwnd, UINT width, UINT height);

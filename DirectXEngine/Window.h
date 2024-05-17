@@ -7,15 +7,10 @@ class Window
 {
 public:
 	Window();
-	//Initialize the window
-	bool init();
-	bool broadcast();
-	//Release the window
-	bool release();
+
 	bool isRun();
 
 	RECT getClientWindowRect();
-	void setHWND(HWND hwnd);
 
 	//EVENTS
 	virtual void onCreate();
@@ -25,9 +20,12 @@ public:
 	virtual void onKillFocus();
 
 
-	~Window();
+	~Window();	
+private:
+	bool broadcast();
 protected:
 	HWND m_hwnd;
 	bool m_is_run;
+	bool m_is_init = false;
 };
 
