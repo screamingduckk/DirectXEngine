@@ -1,14 +1,15 @@
 #include "AppWindow.h"
 #include <Windows.h>
 #include "Vector3D.h"
+#include "Vector2D.h"
 #include "Matrix4x4.h"
 #include "InputSystem.h"
+#include "Mesh.h"
 
 struct vertex
 {
 	Vector3D position;
-	Vector3D color;
-	Vector3D color1;
+	Vector2D texcoord;
 };
 
 
@@ -87,13 +88,13 @@ void AppWindow::update()
 
 
 	cc.m_view = world_cam;
-	cc.m_proj.setOrthoLH
+	/*cc.m_proj.setOrthoLH
 	(
 		(this->getClientWindowRect().right - this->getClientWindowRect().left) / 300.0f,
 		(this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 300.0f,
 		-4.0f,
 		4.0f
-	); 
+	); */
 
 	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left) / 300.0f;
 	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top) / 300.0f;
@@ -116,28 +117,71 @@ void AppWindow::onCreate()
 	InputSystem::get()->addListener(this);
 	InputSystem::get()->showCursor(false);
 
+	m_wood_tex = GraphicsEngine::get()->getTextureManager()->createTextureFromFile(L"Assets\\Textures\\brick.png");
+	m_mesh = GraphicsEngine::get()->getMeshManager()->createMeshFromFile(L"Assets\\Meshes\\teapot.obj");
+
+
 
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain = GraphicsEngine::get()->getRenderSystem()->createSwapChain(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
 	m_world_cam.setTranslation(Vector3D(0, 0, -2));
 
-	vertex vertex_list[] =
+	Vector3D position_list[] =
 	{
-		//X - Y - Z
-		//FRONT FACE
-		{Vector3D(-0.5f,-0.5f,-0.5f),    Vector3D(1,0,0),  Vector3D(0.2f,0,0) },
-		{Vector3D(-0.5f,0.5f,-0.5f),    Vector3D(1,1,0), Vector3D(0.2f,0.2f,0) },
-		{ Vector3D(0.5f,0.5f,-0.5f),   Vector3D(1,1,0),  Vector3D(0.2f,0.2f,0) },
-		{ Vector3D(0.5f,-0.5f,-0.5f),     Vector3D(1,0,0), Vector3D(0.2f,0,0) },
+		{	Vector3D(-0.5f,-0.5f,-0.5f)	},
+		{	Vector3D(-0.5f,0.5f,-0.5f)	},
+		{	Vector3D(0.5f,0.5f,-0.5f)	},
+		{	Vector3D(0.5f,-0.5f,-0.5f)	},
 
 		//BACK FACE
-		{ Vector3D(0.5f,-0.5f,0.5f),    Vector3D(0,1,0), Vector3D(0,0.2f,0) },
-		{ Vector3D(0.5f,0.5f,0.5f),    Vector3D(0,1,1), Vector3D(0,0.2f,0.2f) },
-		{ Vector3D(-0.5f,0.5f,0.5f),   Vector3D(0,1,1),  Vector3D(0,0.2f,0.2f) },
-		{ Vector3D(-0.5f,-0.5f,0.5f),     Vector3D(0,1,0), Vector3D(0,0.2f,0) }
-
+		{	Vector3D(0.5f,-0.5f,0.5f)	},
+		{	Vector3D(0.5f,0.5f,0.5f)	},
+		{	Vector3D(-0.5f,0.5f,0.5f)	},
+		{	Vector3D(-0.5f,-0.5f,0.5f)	}
 	};
+
+	Vector2D texcoord_list[] =
+	{
+		{	Vector2D(0.0f, 0.0f)	},
+		{	Vector2D(0.0f, 1.0f)	},
+		{	Vector2D(1.0f, 0.0f)	},
+		{	Vector2D(1.0f, 1.0f)	},
+	};
+
+	vertex vertex_list[] =
+	{
+		{position_list[0], texcoord_list[1]},
+		{position_list[1], texcoord_list[0]},
+		{position_list[2], texcoord_list[2]},
+		{position_list[3], texcoord_list[3]},
+
+		{position_list[4], texcoord_list[1]},
+		{position_list[5], texcoord_list[0]},
+		{position_list[6], texcoord_list[2]},
+		{position_list[7], texcoord_list[3]},
+
+		{position_list[1], texcoord_list[1]},
+		{position_list[6], texcoord_list[0]},
+		{position_list[5], texcoord_list[2]},
+		{position_list[2], texcoord_list[3]},
+
+		{position_list[7], texcoord_list[1]},
+		{position_list[0], texcoord_list[0]},
+		{position_list[3], texcoord_list[2]},
+		{position_list[4], texcoord_list[3]},
+
+		{position_list[3], texcoord_list[1]},
+		{position_list[2], texcoord_list[0]},
+		{position_list[5], texcoord_list[2]},
+		{position_list[4], texcoord_list[3]},
+
+		{position_list[7], texcoord_list[1]},
+		{position_list[6], texcoord_list[0]},
+		{position_list[1], texcoord_list[2]},
+		{position_list[0], texcoord_list[3]}
+	};
+	
 
 	UINT size_list = ARRAYSIZE(vertex_list);
 
@@ -151,34 +195,28 @@ void AppWindow::onCreate()
 		4,5,6,
 		6,7,4,
 		//TOP SIDE
-		1,6,5,
-		5,2,1,
+		8,9,10,
+		10,11,8,
 		//BOTTOM SIDE
-		7,0,3,
-		3,4,7,
+		12,13,14,
+		14,15,12,
 		//RIGHT SIDE
-		3,2,5,
-		5,4,3,
+		16,17,18,
+		18,19,16,
 		//LEFT SIDE
-		7,6,1,
-		1,0,7
+		20,21,22,
+		22,23,20
 	};
 
 
 	UINT size_index_list = ARRAYSIZE(index_list);
 	m_ib = GraphicsEngine::get()->getRenderSystem()->createIndexBuffer(index_list, size_index_list);
-	
-
 
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	GraphicsEngine::get()->getRenderSystem()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
-
 	m_vs = GraphicsEngine::get()->getRenderSystem()->createVertexShader(shader_byte_code, size_shader);
-	m_vb = GraphicsEngine::get()->getRenderSystem()->createVertexBuffer(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);
-
 	GraphicsEngine::get()->getRenderSystem()->releaseCompiledShader();
-
 
 	GraphicsEngine::get()->getRenderSystem()->compilePixelShader(L"PixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
 	m_ps = GraphicsEngine::get()->getRenderSystem()->createPixelShader(shader_byte_code, size_shader);
@@ -218,11 +256,13 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexShader(m_vs);
 	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setPixelShader(m_ps);
 
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setTexture(m_ps, m_wood_tex);
 
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setIndexBuffer(m_ib);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setVertexBuffer(m_mesh->getVertexBuffer());
 
-	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->setIndexBuffer(m_mesh->getIndexBuffer());
+
+	GraphicsEngine::get()->getRenderSystem()->getImmediateDeviceContext()->drawIndexedTriangleList(m_mesh->getIndexBuffer()->getSizeIndexList(), 0, 0);
 	m_swap_chain->present(true);
 
 
