@@ -11,6 +11,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 		break;
 	}
+	case WM_SIZE:
+	{
+		Window* window = (Window*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+		if (window) window->onSize();
+
+		break;
+	}
 
 	case WM_DESTROY:
 	{
@@ -118,6 +125,14 @@ RECT Window::getClientWindowRect()
 	return rc;
 }
 
+RECT Window::getSizeScreen()
+{
+	RECT rc;
+	rc.right = ::GetSystemMetrics(SM_CXSCREEN);
+	rc.bottom = ::GetSystemMetrics(SM_CYSCREEN);
+	return RECT();
+}
+
 void Window::onCreate()
 {
 }
@@ -137,6 +152,11 @@ void Window::onFocus()
 
 void Window::onKillFocus()
 {
+}
+
+void Window::onSize()
+{
+
 }
 
 Window::~Window()
