@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>Libs\DirectXTex\include;C:\Users\Isabelle\source\repos\DirectXEngine\DirectXEngine\Libs\tinyobjloader\include;$(IncludePath)</IncludePath>
-    <LibraryPath>Libs\DirectXTex\bin;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\isabe\source\repos\DirectXEngine\DirectXEngine\Libs\DirectXTex\include;C:\Users\isabe\source\repos\DirectXEngine\DirectXEngine\Libs\tinyobjloader\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\isabe\source\repos\DirectXEngine\DirectXEngine\Libs\DirectXTex\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
